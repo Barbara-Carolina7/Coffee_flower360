@@ -301,3 +301,150 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* =========================
+   LOGIN COFFEE FLOWER
+========================= */
+
+.login-container {
+  min-height: calc(100vh - 90px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background: #fff9f5;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(91, 53, 45, 0.12);
+  border: 1px solid #f0ddd4;
+  text-align: center;
+}
+
+.login-icon {
+  font-size: 45px;
+  margin-bottom: 10px;
+}
+
+.login-card h1 {
+  color: #4a2c25;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.login-card > p {
+  color: #9b4d20;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 8px;
+}
+
+.login-card label {
+  color: #4a2c25;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.login-card input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #e3cfc5;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  background: #fffdfb;
+}
+
+.login-card input:focus {
+  border-color: #a65325;
+  box-shadow: 0 0 0 3px rgba(166, 83, 37, 0.1);
+}
+
+.login-card button {
+  margin-top: 20px;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: #9b4d20;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login-card button:hover {
+  background: #7f3e19;
+}
+
+.login-message {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff1e8;
+  color: #7f3e19;
+  font-weight: 600;
+}
+/* =========================
+   SELECCIÓN DE LOGIN
+========================= */
+
+.login-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 25px;
+}
+
+.login-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 16px;
+
+  text-decoration: none;
+  color: #4a2c25;
+
+  background: #fffaf7;
+  border: 1px solid #ead6cc;
+  border-radius: 12px;
+
+  transition: 0.3s;
+}
+
+.login-option:hover {
+  background: #fff1e8;
+  border-color: #a65325;
+  transform: translateY(-2px);
+}
+
+.login-option > span {
+  font-size: 30px;
+}
+
+.login-option div {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.login-option strong {
+  font-size: 17px;
+  color: #4a2c25;
+}
+
+.login-option small {
+  margin-top: 4px;
+  color: #8b6b5e;
+}
