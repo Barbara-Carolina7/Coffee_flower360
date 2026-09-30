@@ -1,7 +1,15 @@
+/* =========================
+   CONFIGURACIÓN GENERAL
+========================= */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -9,6 +17,7 @@ body {
   background-color: #fffaf7;
   color: #3e2723;
 }
+
 
 /* =========================
    NAVBAR
@@ -24,7 +33,9 @@ body {
   justify-content: space-between;
 
   background-color: #ffffff;
+
   border-bottom: 1px solid #eadfd9;
+
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 
   position: relative;
@@ -38,6 +49,7 @@ body {
 
   font-size: 24px;
   font-weight: bold;
+
   color: #3e2723;
 }
 
@@ -49,6 +61,7 @@ body {
 
 .navbar-links a {
   text-decoration: none;
+
   color: #4e342e;
 
   font-size: 15px;
@@ -61,6 +74,7 @@ body {
   color: #a0522d;
 }
 
+
 /* =========================
    HOME
 ========================= */
@@ -68,6 +82,11 @@ body {
 .home {
   min-height: calc(100vh - 75px);
 }
+
+
+/* =========================
+   HERO
+========================= */
 
 .hero {
   min-height: 560px;
@@ -93,15 +112,20 @@ body {
 
 .hero-subtitle {
   color: #a0522d;
+
   font-size: 18px;
   font-weight: bold;
+
   margin-bottom: 20px;
 }
 
 .hero h1 {
   font-size: 58px;
+
   line-height: 1.1;
+
   margin-bottom: 25px;
+
   color: #3e2723;
 }
 
@@ -111,10 +135,18 @@ body {
 
 .hero-description {
   font-size: 18px;
+
   line-height: 1.7;
+
   color: #6d5148;
+
   margin-bottom: 35px;
 }
+
+
+/* =========================
+   BOTONES HERO
+========================= */
 
 .hero-buttons {
   display: flex;
@@ -124,11 +156,13 @@ body {
 .btn-primary,
 .btn-secondary {
   display: inline-block;
+
   padding: 14px 25px;
 
   border-radius: 30px;
 
   font-weight: bold;
+
   text-decoration: none;
 
   transition: 0.3s;
@@ -136,6 +170,7 @@ body {
 
 .btn-primary {
   background-color: #8b451f;
+
   color: white;
 }
 
@@ -145,14 +180,22 @@ body {
 
 .btn-secondary {
   border: 2px solid #8b451f;
+
   color: #8b451f;
+
   background-color: white;
 }
 
 .btn-secondary:hover {
   background-color: #8b451f;
+
   color: white;
 }
+
+
+/* =========================
+   IMAGEN / CAFÉ HERO
+========================= */
 
 .hero-image {
   position: relative;
@@ -179,11 +222,13 @@ body {
 
   font-size: 130px;
 
-  box-shadow: 0 20px 40px rgba(80, 45, 30, 0.15);
+  box-shadow:
+    0 20px 40px rgba(80, 45, 30, 0.15);
 }
 
 .flower {
   position: absolute;
+
   font-size: 55px;
 }
 
@@ -197,33 +242,56 @@ body {
   left: 10px;
 }
 
+
 /* =========================
    PRODUCTOS DESTACADOS
 ========================= */
 
 .featured {
   padding: 70px 10%;
+
   text-align: center;
+
   background-color: white;
 }
 
 .section-subtitle {
   color: #a0522d;
+
   font-weight: bold;
+
   margin-bottom: 10px;
 }
 
 .featured h2 {
   font-size: 38px;
+
   color: #3e2723;
+
   margin-bottom: 40px;
 }
 
+
+/* =========================
+   GRID DE PRODUCTOS
+========================= */
+
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns: repeat(2, 1fr);
+
   gap: 25px;
+
+  max-width: 900px;
+
+  margin: 0 auto;
 }
+
+
+/* =========================
+   TARJETAS
+========================= */
 
 .featured-card {
   padding: 35px 25px;
@@ -231,6 +299,7 @@ body {
   border-radius: 20px;
 
   background-color: #fffaf7;
+
   border: 1px solid #eadfd9;
 
   transition: 0.3s;
@@ -238,148 +307,165 @@ body {
 
 .featured-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(80, 45, 30, 0.1);
+
+  box-shadow:
+    0 10px 25px rgba(80, 45, 30, 0.1);
 }
 
 .card-icon {
   font-size: 55px;
+
   margin-bottom: 15px;
 }
 
 .featured-card h3 {
   font-size: 24px;
+
   margin-bottom: 12px;
+
   color: #3e2723;
 }
 
 .featured-card p {
   color: #6d5148;
+
   line-height: 1.6;
+
   margin-bottom: 20px;
 }
 
 .featured-card a {
   color: #a0522d;
+
   font-weight: bold;
+
   text-decoration: none;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 800px) {
-
-  .navbar {
-    height: auto;
-    padding: 20px;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .navbar-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-  }
-
-  .hero {
-    flex-direction: column;
-    text-align: center;
-    padding: 50px 20px;
-  }
-
-  .hero h1 {
-    font-size: 42px;
-  }
-
-  .hero-buttons {
-    justify-content: center;
-  }
-
-  .featured-grid {
-    grid-template-columns: 1fr;
-  }
+.featured-card a:hover {
+  color: #7f3e19;
 }
+
+
 /* =========================
    LOGIN COFFEE FLOWER
 ========================= */
 
 .login-container {
   min-height: calc(100vh - 90px);
+
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   padding: 40px 20px;
+
   background: #fff9f5;
 }
 
 .login-card {
   width: 100%;
+
   max-width: 430px;
+
   background: #ffffff;
+
   padding: 40px;
+
   border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(91, 53, 45, 0.12);
+
+  box-shadow:
+    0 8px 30px rgba(91, 53, 45, 0.12);
+
   border: 1px solid #f0ddd4;
+
   text-align: center;
 }
 
 .login-icon {
   font-size: 45px;
+
   margin-bottom: 10px;
 }
 
 .login-card h1 {
   color: #4a2c25;
+
   font-size: 28px;
+
   margin-bottom: 8px;
 }
 
 .login-card > p {
   color: #9b4d20;
+
   font-weight: 600;
+
   margin-bottom: 30px;
 }
 
 .login-card form {
   display: flex;
+
   flex-direction: column;
+
   text-align: left;
+
   gap: 8px;
 }
 
 .login-card label {
   color: #4a2c25;
+
   font-weight: 600;
+
   margin-top: 8px;
 }
 
 .login-card input {
   width: 100%;
+
   box-sizing: border-box;
+
   padding: 13px 14px;
+
   border: 1px solid #e3cfc5;
+
   border-radius: 10px;
+
   font-size: 15px;
+
   outline: none;
+
   background: #fffdfb;
 }
 
 .login-card input:focus {
   border-color: #a65325;
-  box-shadow: 0 0 0 3px rgba(166, 83, 37, 0.1);
+
+  box-shadow:
+    0 0 0 3px rgba(166, 83, 37, 0.1);
 }
 
 .login-card button {
   margin-top: 20px;
+
   padding: 13px;
+
   border: none;
+
   border-radius: 10px;
+
   background: #9b4d20;
+
   color: white;
+
   font-size: 16px;
+
   font-weight: 700;
+
   cursor: pointer;
 }
 
@@ -389,35 +475,50 @@ body {
 
 .login-message {
   margin-top: 20px;
+
   padding: 12px;
+
   border-radius: 10px;
+
   background: #fff1e8;
+
   color: #7f3e19;
+
   font-weight: 600;
 }
+
+
 /* =========================
    SELECCIÓN DE LOGIN
 ========================= */
 
 .login-options {
   display: flex;
+
   flex-direction: column;
+
   gap: 14px;
+
   margin-top: 25px;
 }
 
 .login-option {
   display: flex;
+
   align-items: center;
+
   gap: 15px;
 
   padding: 16px;
 
   text-decoration: none;
+
   color: #4a2c25;
 
   background: #fffaf7;
+
   border: 1px solid #ead6cc;
+
   border-radius: 12px;
 
   transition: 0.3s;
@@ -425,7 +526,9 @@ body {
 
 .login-option:hover {
   background: #fff1e8;
+
   border-color: #a65325;
+
   transform: translateY(-2px);
 }
 
@@ -435,16 +538,107 @@ body {
 
 .login-option div {
   display: flex;
+
   flex-direction: column;
+
   text-align: left;
 }
 
 .login-option strong {
   font-size: 17px;
+
   color: #4a2c25;
 }
 
 .login-option small {
   margin-top: 4px;
+
   color: #8b6b5e;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+
+  /* NAVBAR */
+
+  .navbar {
+    height: auto;
+
+    padding: 20px;
+
+    flex-direction: column;
+
+    gap: 15px;
+  }
+
+  .navbar-links {
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 15px;
+  }
+
+
+  /* HERO */
+
+  .hero {
+    flex-direction: column;
+
+    text-align: center;
+
+    padding: 50px 20px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+
+    flex-wrap: wrap;
+  }
+
+  .hero-image {
+    width: 300px;
+
+    height: 300px;
+  }
+
+  .coffee-circle {
+    width: 230px;
+
+    height: 230px;
+
+    font-size: 100px;
+  }
+
+
+  /* PRODUCTOS */
+
+  .featured {
+    padding: 50px 20px;
+  }
+
+  .featured h2 {
+    font-size: 32px;
+  }
+
+  .featured-grid {
+    grid-template-columns: 1fr;
+
+    max-width: 500px;
+  }
+
+
+  /* LOGIN */
+
+  .login-card {
+    padding: 30px 25px;
+  }
 }

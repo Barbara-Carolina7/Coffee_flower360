@@ -1,9 +1,18 @@
 function Home() {
   return (
     <main className="home">
+
+      {/* =========================
+          HERO
+      ========================= */}
+
       <section className="hero">
+
         <div className="hero-content">
-          <p className="hero-subtitle">☕ Bienvenido a Coffee Flower 🌸</p>
+
+          <p className="hero-subtitle">
+            ☕ Bienvenido a Coffee Flower 🌸
+          </p>
 
           <h1>
             El sabor que
@@ -17,6 +26,7 @@ function Home() {
           </p>
 
           <div className="hero-buttons">
+
             <a href="/products" className="btn-primary">
               Ver productos
             </a>
@@ -24,53 +34,97 @@ function Home() {
             <a href="/categories" className="btn-secondary">
               Ver categorías
             </a>
+
           </div>
+
         </div>
 
         <div className="hero-image">
+
           <div className="coffee-circle">
             ☕
           </div>
-          <div className="flower flower-one">🌸</div>
-          <div className="flower flower-two">🌷</div>
+
+          <div className="flower flower-one">
+            🌸
+          </div>
+
+          <div className="flower flower-two">
+            🌷
+          </div>
+
         </div>
+
       </section>
+
+
+      {/* =========================
+          PRODUCTOS DESTACADOS
+      ========================= */}
 
       <section className="featured">
-        <p className="section-subtitle">Nuestros favoritos</p>
 
-        <h2>Productos destacados</h2>
+        <p className="section-subtitle">
+          Nuestros favoritos
+        </p>
+
+        <h2>
+          Productos destacados
+        </h2>
 
         <div className="featured-grid">
-          <div className="featured-card">
-            <div className="card-icon">☕</div>
-            <h3>Cafés</h3>
-            <p>
-              Cafés preparados con granos seleccionados para disfrutar
-              cada momento.
-            </p>
-            <a href="/products">Ver productos →</a>
-          </div>
+
+          {/* CAFÉS */}
 
           <div className="featured-card">
-            <div className="card-icon">🍰</div>
-            <h3>Pastelería</h3>
+
+            <div className="card-icon">
+              ☕
+            </div>
+
+            <h3>
+              Cafés
+            </h3>
+
             <p>
-              Deliciosos acompañamientos para disfrutar junto a tu café.
+              Cafés preparados con granos seleccionados
+              para disfrutar cada momento.
             </p>
-            <a href="/products">Ver productos →</a>
+
+            <a href="/products">
+              Ver productos →
+            </a>
+
           </div>
 
+
+          {/* PASTELERÍA */}
+
           <div className="featured-card">
-            <div className="card-icon">🌸</div>
-            <h3>Especiales</h3>
+
+            <div className="card-icon">
+              🍰
+            </div>
+
+            <h3>
+              Pastelería
+            </h3>
+
             <p>
-              Productos especiales pensados para regalar o disfrutar.
+              Deliciosos acompañamientos para disfrutar
+              junto a tu café.
             </p>
-            <a href="/products">Ver productos →</a>
+
+            <a href="/products">
+              Ver productos →
+            </a>
+
           </div>
+
         </div>
+
       </section>
+
     </main>
   );
 }
