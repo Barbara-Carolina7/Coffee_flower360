@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
+  const navigate = useNavigate();
+
   const [carrito, setCarrito] = useState([]);
 
   useEffect(() => {
@@ -78,76 +81,178 @@ function Cart() {
   );
 
   return (
-    <div>
-      <h1>Carrito</h1>
+    <main className="cart-page">
 
-      {carrito.length === 0 ? (
-        <p>Tu carrito está vacío.</p>
-      ) : (
-        <>
-          {carrito.map((producto) => (
-            <div key={producto.id}>
-              <h2>{producto.nombre}</h2>
+      <div className="cart-container">
 
-              <p>
-                Precio: $
-                {Number(producto.precio).toLocaleString("es-CL")}
+        {/* ENCABEZADO */}
+
+        <section className="cart-header">
+
+          <p className="section-subtitle">
+            ☕ Coffee Flower 🌸
+          </p>
+
+          <h1>Tu carrito</h1>
+
+          <p>
+            Revisa tus productos antes de continuar con tu compra.
+          </p>
+
+        </section>
+
+
+        {/* CARRITO VACÍO */}
+
+        {carrito.length === 0 ? (
+
+          <div className="empty-products">
+
+            <span>🛒</span>
+
+            <h2>Tu carrito está vacío</h2>
+
+            <p>
+              Agrega algunos de nuestros deliciosos productos
+              para comenzar tu compra.
+            </p>
+
+            <a
+              href="/products"
+              className="btn-primary"
+              style={{ marginTop: "25px" }}
+            >
+              Ver productos ☕
+            </a>
+
+          </div>
+
+        ) : (
+
+          <>
+
+            {/* PRODUCTOS DEL CARRITO */}
+
+            {carrito.map((producto) => (
+
+              <article
+                className="cart-item"
+                key={producto.id}
+              >
+
+                <div className="cart-item-info">
+
+                  <h2>{producto.nombre}</h2>
+
+                  <p>
+                    Precio unitario: $
+                    {Number(producto.precio).toLocaleString(
+                      "es-CL"
+                    )}
+                  </p>
+
+                  <p>
+                    Subtotal: $
+                    {(
+                      Number(producto.precio) *
+                      producto.cantidad
+                    ).toLocaleString("es-CL")}
+                  </p>
+
+                </div>
+
+
+                {/* CANTIDAD */}
+
+                <div className="cart-controls">
+
+                  <button
+                    onClick={() =>
+                      disminuirCantidad(producto.id)
+                    }
+                    aria-label="Disminuir cantidad"
+                  >
+                    −
+                  </button>
+
+                  <span className="cart-quantity">
+                    {producto.cantidad}
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      aumentarCantidad(producto.id)
+                    }
+                    aria-label="Aumentar cantidad"
+                  >
+                    +
+                  </button>
+
+                </div>
+
+
+                {/* ELIMINAR */}
+
+                <button
+                  onClick={() =>
+                    eliminarProducto(producto.id)
+                  }
+                  style={{
+                    border: "none",
+                    background: "#fff0f7",
+                    color: "#8b451f",
+                    padding: "10px 14px",
+                    borderRadius: "10px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                  }}
+                >
+                  Eliminar
+                </button>
+
+              </article>
+
+            ))}
+
+
+            {/* RESUMEN */}
+
+            <section className="cart-summary">
+
+              <p className="cart-total">
+                Total: $
+                {total.toLocaleString("es-CL")}
               </p>
 
-              <p>
-                Cantidad: {producto.cantidad}
-              </p>
 
-              <button
-                onClick={() =>
-                  disminuirCantidad(producto.id)
-                }
-              >
-                -
-              </button>
+              <div className="cart-actions">
 
-              <button
-                onClick={() =>
-                  aumentarCantidad(producto.id)
-                }
-              >
-                +
-              </button>
+                <button
+                  onClick={vaciarCarrito}
+                  className="btn-secondary"
+                >
+                  Vaciar carrito
+                </button>
 
-              <button
-                onClick={() =>
-                  eliminarProducto(producto.id)
-                }
-              >
-                Eliminar
-              </button>
 
-              <p>
-                Subtotal: $
-                {(
-                  Number(producto.precio) *
-                  producto.cantidad
-                ).toLocaleString("es-CL")}
-              </p>
-            </div>
-          ))}
+                <button
+                  className="btn-primary"
+                  onClick={() => navigate("/orders")}
+                >
+                  Continuar compra
+                </button>
 
-          <hr />
+              </div>
 
-          <h2>
-            Total: ${total.toLocaleString("es-CL")}
-          </h2>
+            </section>
 
-          <button onClick={vaciarCarrito}>
-            Vaciar carrito
-          </button>
+          </>
 
-          <button>
-            Continuar compra
-          </button>
-        </>
-      )}
-    </div>
+        )}
+
+      </div>
+
+    </main>
   );
 }
 
