@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { signIn, signOut, fetchAuthSession } from "aws-amplify/auth";
 import { useNavigate } from "react-router-dom";
 
 function LoginCliente() {
@@ -17,60 +16,24 @@ function LoginCliente() {
     setCargando(true);
 
     try {
-      // Iniciar sesión con Cognito
-      const resultado = await signIn({
-        username: email,
-        password: password,
-      });
+      // Por ahora el login está preparado para conectarse
+      // posteriormente al endpoint de autenticación del BFF.
 
-      console.log("Resultado Cognito:", resultado);
-
-      // Verificar si Cognito requiere algún paso adicional
-      if (resultado.nextStep?.signInStep !== "DONE") {
-        setMensaje(
-          "Tu cuenta necesita completar un paso adicional de autenticación."
-        );
-        return;
+      if (!email || !password) {
+        throw new Error("Debes ingresar correo y contraseña.");
       }
 
-      // Obtener la sesión y los datos del usuario
-      const session = await fetchAuthSession();
+      setMensaje("Datos ingresados correctamente. ☕🌸");
 
-      const idToken = session.tokens?.idToken;
-
-      if (!idToken) {
-        throw new Error("No se pudo obtener el token de usuario.");
-      }
-
-      // Obtener los grupos de Cognito
-      const grupos = idToken.payload["cognito:groups"] || [];
-
-      console.log("Grupos del usuario:", grupos);
-
-      // Comprobar que pertenece al grupo Cliente
-      if (!grupos.includes("Cliente")) {
-        await signOut();
-
-        setMensaje(
-          "Este usuario no tiene permisos para ingresar como Cliente."
-        );
-
-        return;
-      }
-
-      // Login correcto
-      setMensaje("¡Inicio de sesión correcto! ☕🌸");
-
-      // Ir al inicio
       setTimeout(() => {
         navigate("/");
       }, 1000);
 
     } catch (error) {
-      console.error("Error de Cognito:", error);
+      console.error("Error de inicio de sesión:", error);
 
       setMensaje(
-        error.message || "Correo o contraseña incorrectos."
+        error.message || "No se pudo iniciar sesión."
       );
     } finally {
       setCargando(false);

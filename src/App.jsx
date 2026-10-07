@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Categories from "./pages/Categories";
 import Cart from "./pages/Cart";
-import Login from "./pages/Login";
+import LoginCliente from "./pages/LoginCliente";
 import Orders from "./pages/Orders";
 import Dashboard from "./pages/Dashboard";
 
@@ -20,7 +20,7 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginCliente />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
