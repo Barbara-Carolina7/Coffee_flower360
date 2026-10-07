@@ -46,12 +46,9 @@ function Products() {
       });
     }
 
-    localStorage.setItem(
-      "carrito",
-      JSON.stringify(carritoActual)
-    );
+    localStorage.setItem("carrito", JSON.stringify(carritoActual));
 
-    setMensaje(`${producto.nombre} agregado al carrito ☕🛒`);
+    setMensaje(`${producto.nombre} agregado al carrito ☕🌸`);
 
     setTimeout(() => {
       setMensaje("");
@@ -59,54 +56,108 @@ function Products() {
   };
 
   if (cargando) {
-    return <h2>Cargando productos...</h2>;
+    return (
+      <main className="products-page">
+        <div className="loading-box">
+          <div className="loading-icon">☕</div>
+          <h2>Cargando nuestros productos...</h2>
+          <p>Preparando algo delicioso para ti 🌸</p>
+        </div>
+      </main>
+    );
   }
 
   if (error) {
-    return <h2>{error}</h2>;
+    return (
+      <main className="products-page">
+        <div className="error-box">
+          <span>☕</span>
+          <h2>Ups...</h2>
+          <p>{error}</p>
+        </div>
+      </main>
+    );
   }
 
   return (
-    <div>
-      <h1>Productos</h1>
+    <main className="products-page">
+
+      <section className="products-header">
+        <p className="section-subtitle">☕ Coffee Flower 🌸</p>
+
+        <h1>Nuestros productos</h1>
+
+        <p>
+          Descubre nuestros cafés y deliciosos acompañamientos,
+          preparados especialmente para ti.
+        </p>
+      </section>
 
       {mensaje && (
-        <p>
+        <div className="cart-message">
           {mensaje}
-        </p>
+        </div>
       )}
 
       {productos.length === 0 ? (
-        <p>No hay productos disponibles.</p>
-      ) : (
-        <div>
-          {productos.map((producto) => (
-            <div key={producto.id}>
-              <h2>{producto.nombre}</h2>
-
-              <p>{producto.descripcion}</p>
-
-              <p>
-                ${Number(producto.precio).toLocaleString("es-CL")}
-              </p>
-
-              <p>
-                Stock: {producto.stock}
-              </p>
-
-              <button
-                onClick={() => agregarAlCarrito(producto)}
-                disabled={producto.stock <= 0}
-              >
-                {producto.stock <= 0
-                  ? "Sin stock"
-                  : "Agregar al carrito 🛒"}
-              </button>
-            </div>
-          ))}
+        <div className="empty-products">
+          <span>☕</span>
+          <h2>No hay productos disponibles</h2>
+          <p>Pronto tendremos nuevas opciones para ti.</p>
         </div>
+      ) : (
+        <section className="products-grid">
+
+          {productos.map((producto) => (
+            <article className="product-card" key={producto.id}>
+
+              <div className="product-image">
+                ☕
+              </div>
+
+              <div className="product-content">
+
+                <span className="product-category">
+                  Coffee Flower
+                </span>
+
+                <h2>{producto.nombre}</h2>
+
+                <p className="product-description">
+                  {producto.descripcion}
+                </p>
+
+                <div className="product-info">
+
+                  <strong>
+                    ${Number(producto.precio).toLocaleString("es-CL")}
+                  </strong>
+
+                  <span>
+                    Stock: {producto.stock}
+                  </span>
+
+                </div>
+
+                <button
+                  className="product-button"
+                  onClick={() => agregarAlCarrito(producto)}
+                  disabled={producto.stock <= 0}
+                >
+                  {producto.stock <= 0
+                    ? "Sin stock"
+                    : "Agregar al carrito 🛒"}
+                </button>
+
+              </div>
+
+            </article>
+          ))}
+
+        </section>
       )}
-    </div>
+
+    </main>
   );
 }
 
