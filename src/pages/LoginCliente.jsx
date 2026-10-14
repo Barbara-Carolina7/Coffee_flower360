@@ -3,8 +3,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   signIn,
+  signOut,
   fetchAuthSession,
   confirmSignIn,
+  getCurrentUser,
 } from "aws-amplify/auth";
 
 function LoginCliente() {
@@ -17,6 +19,24 @@ function LoginCliente() {
   const [cargando, setCargando] = useState(false);
 
   const navigate = useNavigate();
+
+  const cerrarSesion = async () => {
+    setMensaje("");
+    setCargando(true);
+
+    try {
+      await signOut();
+      setPassword("");
+      setNuevaPassword("");
+      setRequiereNuevaPassword(false);
+      setMensaje("Sesión cerrada correctamente. Ya puedes ingresar con otra cuenta.");
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      setMensaje(error.message || "No se pudo cerrar la sesión.");
+    } finally {
+      setCargando(false);
+    }
+  };
 
   const redirigirPorRol = async () => {
     const sesion = await fetchAuthSession();
@@ -34,7 +54,7 @@ function LoginCliente() {
       navigate("/", { replace: true });
     } else {
       setMensaje(
-        "Tu usuario inició sesión, pero no tiene un grupo reconocido en Cognito."
+        "Iniciaste sesión, pero tu usuario no tiene un grupo reconocido en Cognito."
       );
     }
   };
@@ -45,6 +65,20 @@ function LoginCliente() {
     setCargando(true);
 
     try {
+      // Si existe una sesión, cerrarla antes de cambiar de usuario.
+      try {
+        await getCurrentUser();
+        await signOut();
+      } catch (error) {
+        // Solo continuar si realmente no hay una sesión activa.
+        if (
+          error.name !== "UserUnAuthenticatedException" &&
+          error.name !== "NotAuthorizedException"
+        ) {
+          throw error;
+        }
+      }
+
       const resultado = await signIn({
         username: email.trim(),
         password,
@@ -95,6 +129,7 @@ function LoginCliente() {
       }
 
       setRequiereNuevaPassword(false);
+      setNuevaPassword("");
       await redirigirPorRol();
     } catch (error) {
       console.error("Error al cambiar contraseña:", error);
@@ -116,11 +151,16 @@ function LoginCliente() {
             <p>Crea una contraseña nueva para continuar.</p>
 
             <form onSubmit={cambiarPassword}>
-              <label>Nueva contraseña</label>
+              <label htmlFor="nuevaPassword">
+                Nueva contraseña
+              </label>
+
               <input
+                id="nuevaPassword"
                 type="password"
                 value={nuevaPassword}
                 onChange={(e) => setNuevaPassword(e.target.value)}
+                placeholder="Ingresa tu nueva contraseña"
                 autoComplete="new-password"
                 minLength={8}
                 required
@@ -136,8 +176,10 @@ function LoginCliente() {
             <p>Inicia sesión en tu cuenta</p>
 
             <form onSubmit={iniciarSesion}>
-              <label>Correo electrónico</label>
+              <label htmlFor="email">Correo electrónico</label>
+
               <input
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -146,8 +188,10 @@ function LoginCliente() {
                 required
               />
 
-              <label>Contraseña</label>
+              <label htmlFor="password">Contraseña</label>
+
               <input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -162,6 +206,15 @@ function LoginCliente() {
             </form>
           </>
         )}
+
+        <button
+          type="button"
+          onClick={cerrarSesion}
+          disabled={cargando}
+          className="logout-button"
+        >
+          {cargando ? "Procesando..." : "Cerrar sesión"}
+        </button>
 
         {mensaje && (
           <p className="login-message" role="status">
