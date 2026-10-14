@@ -1,5 +1,7 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signIn } from "aws-amplify/auth";
 
 function LoginCliente() {
   const [email, setEmail] = useState("");
@@ -11,29 +13,29 @@ function LoginCliente() {
 
   const iniciarSesion = async (e) => {
     e.preventDefault();
-
     setMensaje("");
     setCargando(true);
 
     try {
-      // Por ahora el login está preparado para conectarse
-      // posteriormente al endpoint de autenticación del BFF.
+      const resultado = await signIn({
+        username: email.trim(),
+        password,
+      });
 
-      if (!email || !password) {
-        throw new Error("Debes ingresar correo y contraseña.");
-      }
-
-      setMensaje("Datos ingresados correctamente. ☕🌸");
-
-      setTimeout(() => {
+      if (resultado.isSignedIn) {
+        setMensaje("¡Inicio de sesión exitoso! ☕🌸");
         navigate("/");
-      }, 1000);
-
+      } else {
+        setMensaje(
+          "Debes completar el siguiente paso de autenticación: " +
+            (resultado.nextStep?.signInStep || "verifica tu cuenta")
+        );
+      }
     } catch (error) {
       console.error("Error de inicio de sesión:", error);
-
       setMensaje(
-        error.message || "No se pudo iniciar sesión."
+        error.message ||
+          "No se pudo iniciar sesión. Revisa tus credenciales."
       );
     } finally {
       setCargando(false);
@@ -43,56 +45,42 @@ function LoginCliente() {
   return (
     <div className="login-container">
       <div className="login-card">
-
-        <div className="login-icon">
-          ☕🌸
-        </div>
+        <div className="login-icon">☕🌸</div>
 
         <h1>Bienvenido a Coffee Flower</h1>
-
         <p>Inicio de sesión Cliente</p>
 
         <form onSubmit={iniciarSesion}>
-
-          <label>
-            Correo electrónico
-          </label>
-
+          <label>Correo electrónico</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="correo@ejemplo.com"
+            autoComplete="username"
             required
           />
 
-          <label>
-            Contraseña
-          </label>
-
+          <label>Contraseña</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
+            placeholder="Ingresa tu contraseña"
+            autoComplete="current-password"
             required
           />
 
-          <button
-            type="submit"
-            disabled={cargando}
-          >
+          <button type="submit" disabled={cargando}>
             {cargando ? "Ingresando..." : "Iniciar sesión"}
           </button>
-
         </form>
 
         {mensaje && (
-          <p className="login-message">
+          <p className="login-message" role="status">
             {mensaje}
           </p>
         )}
-
       </div>
     </div>
   );
