@@ -301,3 +301,34 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.navbar-logo {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar-user {
+  font-weight: 600;
+  color: #603b32;
+  white-space: nowrap;
+}
+
+.navbar-logout {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: #8b451f;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.navbar-logout:hover {
+  background: #6f3418;
+}
+
+.navbar-logout:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
