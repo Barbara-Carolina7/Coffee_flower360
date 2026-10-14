@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getCurrentUser,
   fetchAuthSession,
@@ -11,37 +11,49 @@ function Navbar() {
   const [usuario, setUsuario] = useState(null);
   const [rol, setRol] = useState("");
   const [cargando, setCargando] = useState(false);
+
   const navigate = useNavigate();
-
-  const revisarSesion = async () => {
-    try {
-      const usuarioActual = await getCurrentUser();
-      const sesion = await fetchAuthSession();
-
-      const grupos =
-        sesion.tokens?.idToken?.payload?.["cognito:groups"] || [];
-
-      let rolActual = "";
-
-      if (grupos.includes("Admin")) {
-        rolActual = "Administrador";
-      } else if (grupos.includes("Colaborador")) {
-        rolActual = "Colaborador";
-      } else if (grupos.includes("Cliente")) {
-        rolActual = "Cliente";
-      }
-
-      setUsuario(usuarioActual);
-      setRol(rolActual);
-    } catch {
-      setUsuario(null);
-      setRol("");
-    }
-  };
+  const location = useLocation();
 
   useEffect(() => {
+    let activo = true;
+
+    async function revisarSesion() {
+      try {
+        const usuarioActual = await getCurrentUser();
+        const sesion = await fetchAuthSession();
+
+        const grupos =
+          sesion.tokens?.idToken?.payload?.["cognito:groups"] || [];
+
+        let rolActual = "Usuario";
+
+        if (grupos.includes("Admin")) {
+          rolActual = "Administrador";
+        } else if (grupos.includes("Colaborador")) {
+          rolActual = "Colaborador";
+        } else if (grupos.includes("Cliente")) {
+          rolActual = "Cliente";
+        }
+
+        if (activo) {
+          setUsuario(usuarioActual);
+          setRol(rolActual);
+        }
+      } catch {
+        if (activo) {
+          setUsuario(null);
+          setRol("");
+        }
+      }
+    }
+
     revisarSesion();
-  }, []);
+
+    return () => {
+      activo = false;
+    };
+  }, [location.pathname]);
 
   const cerrarSesion = async () => {
     setCargando(true);
@@ -53,7 +65,7 @@ function Navbar() {
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
-      alert("No se pudo cerrar la sesión. Intenta nuevamente.");
+      alert("No se pudo cerrar sesión: " + error.message);
     } finally {
       setCargando(false);
     }
@@ -74,14 +86,14 @@ function Navbar() {
         {usuario ? (
           <>
             <span className="navbar-user">
-              👤 {rol || usuario.username}
+              👤 {rol}
             </span>
 
             <button
               type="button"
+              className="navbar-logout"
               onClick={cerrarSesion}
               disabled={cargando}
-              className="navbar-logout"
             >
               {cargando ? "Cerrando..." : "↪ Cerrar sesión"}
             </button>
