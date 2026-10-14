@@ -1,7 +1,10 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signIn } from "aws-amplify/auth";
+import {
+  signIn,
+  fetchAuthSession,
+} from "aws-amplify/auth";
 
 function LoginCliente() {
   const [email, setEmail] = useState("");
@@ -22,17 +25,33 @@ function LoginCliente() {
         password,
       });
 
-      if (resultado.isSignedIn) {
-        setMensaje("¡Inicio de sesión exitoso! ☕🌸");
-        navigate("/");
+      if (!resultado.isSignedIn) {
+        setMensaje(
+          "Debes completar otro paso de autenticación: " +
+            (resultado.nextStep?.signInStep || "revisa tu cuenta")
+        );
+        return;
+      }
+
+      const sesion = await fetchAuthSession();
+
+      const grupos =
+        sesion.tokens?.accessToken?.payload?.["cognito:groups"] || [];
+
+      if (grupos.includes("Admin")) {
+        navigate("/dashboard", { replace: true });
+      } else if (grupos.includes("Colaborador")) {
+        navigate("/colaborador", { replace: true });
+      } else if (grupos.includes("Cliente")) {
+        navigate("/", { replace: true });
       } else {
         setMensaje(
-          "Debes completar el siguiente paso de autenticación: " +
-            (resultado.nextStep?.signInStep || "verifica tu cuenta")
+          "Inicio de sesión correcto, pero tu usuario no tiene un grupo reconocido."
         );
       }
     } catch (error) {
       console.error("Error de inicio de sesión:", error);
+
       setMensaje(
         error.message ||
           "No se pudo iniciar sesión. Revisa tus credenciales."
@@ -48,7 +67,7 @@ function LoginCliente() {
         <div className="login-icon">☕🌸</div>
 
         <h1>Bienvenido a Coffee Flower</h1>
-        <p>Inicio de sesión Cliente</p>
+        <p>Inicia sesión en tu cuenta</p>
 
         <form onSubmit={iniciarSesion}>
           <label>Correo electrónico</label>
