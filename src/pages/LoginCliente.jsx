@@ -3,15 +3,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   signIn,
-  confirmSignIn,
   fetchAuthSession,
+  confirmSignIn,
 } from "aws-amplify/auth";
 
 function LoginCliente() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nuevaPassword, setNuevaPassword] = useState("");
-  const [requiereCambio, setRequiereCambio] = useState(false);
+  const [requiereNuevaPassword, setRequiereNuevaPassword] =
+    useState(false);
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
 
@@ -19,8 +20,11 @@ function LoginCliente() {
 
   const redirigirPorRol = async () => {
     const sesion = await fetchAuthSession();
+
     const grupos =
-      sesion.tokens?.accessToken?.payload?.["cognito:groups"] || [];
+      sesion.tokens?.idToken?.payload?.["cognito:groups"] ||
+      sesion.tokens?.accessToken?.payload?.["cognito:groups"] ||
+      [];
 
     if (grupos.includes("Admin")) {
       navigate("/dashboard", { replace: true });
@@ -29,7 +33,9 @@ function LoginCliente() {
     } else if (grupos.includes("Cliente")) {
       navigate("/", { replace: true });
     } else {
-      setMensaje("Tu usuario no tiene un grupo reconocido.");
+      setMensaje(
+        "Tu usuario inició sesión, pero no tiene un grupo reconocido en Cognito."
+      );
     }
   };
 
@@ -44,20 +50,24 @@ function LoginCliente() {
         password,
       });
 
-      if (resultado.isSignedIn) {
-        await redirigirPorRol();
-      } else if (
+      if (
         resultado.nextStep?.signInStep ===
         "CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED"
       ) {
-        setRequiereCambio(true);
-        setMensaje("Crea una nueva contraseña para continuar.");
-      } else {
+        setRequiereNuevaPassword(true);
+        setMensaje("Debes crear una contraseña nueva para continuar.");
+        return;
+      }
+
+      if (!resultado.isSignedIn) {
         setMensaje(
           "Debes completar otro paso de autenticación: " +
             (resultado.nextStep?.signInStep || "revisa tu cuenta")
         );
+        return;
       }
+
+      await redirigirPorRol();
     } catch (error) {
       console.error("Error de inicio de sesión:", error);
       setMensaje(error.message || "No se pudo iniciar sesión.");
@@ -69,12 +79,6 @@ function LoginCliente() {
   const cambiarPassword = async (e) => {
     e.preventDefault();
     setMensaje("");
-
-    if (nuevaPassword.length < 8) {
-      setMensaje("La nueva contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
-
     setCargando(true);
 
     try {
@@ -82,21 +86,19 @@ function LoginCliente() {
         challengeResponse: nuevaPassword,
       });
 
-      if (resultado.isSignedIn) {
-        setRequiereCambio(false);
-        await redirigirPorRol();
-      } else {
+      if (!resultado.isSignedIn) {
         setMensaje(
-          "Cognito requiere otro paso: " +
-            (resultado.nextStep?.signInStep || "consulta al administrador")
+          "Autenticación pendiente: " +
+            (resultado.nextStep?.signInStep || "intenta nuevamente")
         );
+        return;
       }
+
+      setRequiereNuevaPassword(false);
+      await redirigirPorRol();
     } catch (error) {
       console.error("Error al cambiar contraseña:", error);
-      setMensaje(
-        error.message ||
-          "No se pudo cambiar la contraseña. Revisa los requisitos de Cognito."
-      );
+      setMensaje(error.message || "No se pudo cambiar la contraseña.");
     } finally {
       setCargando(false);
     }
@@ -108,53 +110,57 @@ function LoginCliente() {
         <div className="login-icon">☕🌸</div>
 
         <h1>Bienvenido a Coffee Flower</h1>
-        <p>
-          {requiereCambio
-            ? "Crea tu nueva contraseña"
-            : "Inicia sesión en tu cuenta"}
-        </p>
 
-        {!requiereCambio ? (
-          <form onSubmit={iniciarSesion}>
-            <label>Correo electrónico</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="correo@ejemplo.com"
-              autoComplete="username"
-              required
-            />
+        {requiereNuevaPassword ? (
+          <>
+            <p>Crea una contraseña nueva para continuar.</p>
 
-            <label>Contraseña temporal</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-            />
+            <form onSubmit={cambiarPassword}>
+              <label>Nueva contraseña</label>
+              <input
+                type="password"
+                value={nuevaPassword}
+                onChange={(e) => setNuevaPassword(e.target.value)}
+                autoComplete="new-password"
+                minLength={8}
+                required
+              />
 
-            <button type="submit" disabled={cargando}>
-              {cargando ? "Ingresando..." : "Iniciar sesión"}
-            </button>
-          </form>
+              <button type="submit" disabled={cargando}>
+                {cargando ? "Guardando..." : "Cambiar contraseña"}
+              </button>
+            </form>
+          </>
         ) : (
-          <form onSubmit={cambiarPassword}>
-            <label>Nueva contraseña</label>
-            <input
-              type="password"
-              value={nuevaPassword}
-              onChange={(e) => setNuevaPassword(e.target.value)}
-              autoComplete="new-password"
-              minLength={8}
-              required
-            />
+          <>
+            <p>Inicia sesión en tu cuenta</p>
 
-            <button type="submit" disabled={cargando}>
-              {cargando ? "Guardando..." : "Cambiar contraseña"}
-            </button>
-          </form>
+            <form onSubmit={iniciarSesion}>
+              <label>Correo electrónico</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="correo@ejemplo.com"
+                autoComplete="username"
+                required
+              />
+
+              <label>Contraseña</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Ingresa tu contraseña"
+                autoComplete="current-password"
+                required
+              />
+
+              <button type="submit" disabled={cargando}>
+                {cargando ? "Ingresando..." : "Iniciar sesión"}
+              </button>
+            </form>
+          </>
         )}
 
         {mensaje && (
