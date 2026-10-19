@@ -642,3 +642,149 @@ body {
     padding: 30px 25px;
   }
 }
+
+.products-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+
+.products-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.products-header h1 {
+  margin: 10px 0;
+  color: #5b3825;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.products-header p {
+  color: #765b4b;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 24px;
+}
+
+.product-card {
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fffaf5;
+  border: 1px solid #eadbce;
+  box-shadow: 0 5px 16px #5b382510;
+}
+
+.product-card-image {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1e2d3;
+  font-size: 60px;
+}
+
+.product-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-card-content {
+  padding: 18px;
+}
+
+.product-card-content h3 {
+  color: #5b3825;
+  margin: 0 0 10px;
+}
+
+.product-card-content p {
+  color: #765b4b;
+  min-height: 42px;
+}
+
+.product-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.product-card-footer strong {
+  color: #5b3825;
+  font-size: 18px;
+}
+
+.product-card-footer button {
+  border: none;
+  border-radius: 8px;
+  background: #6b422b;
+  color: white;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.product-card-footer button:hover {
+  background: #4d2d1c;
+}
+
+.cliente-container {
+  min-height: 75vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 20px;
+}
+
+.cliente-card {
+  width: 100%;
+  max-width: 650px;
+  padding: 40px 28px;
+  text-align: center;
+  background: #fffaf5;
+  border-radius: 22px;
+  box-shadow: 0 8px 28px rgba(80, 45, 30, 0.12);
+}
+
+.cliente-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.cliente-card h1 {
+  color: #70452f;
+  margin-bottom: 14px;
+}
+
+.cliente-card p {
+  color: #755e52;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.cliente-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cliente-button {
+  display: inline-block;
+  padding: 12px 20px;
+  background: #8b5e45;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.cliente-button:hover {
+  background: #68422f;
+}
+

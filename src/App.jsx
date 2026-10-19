@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -15,31 +16,28 @@ import LoginAdmin from "./pages/LoginAdmin";
 import Orders from "./pages/Orders";
 import Dashboard from "./pages/Dashboard";
 
+// Página del cliente
+import Cliente from "./pages/Cliente";
+
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
 
       <Routes>
-        {/* Página principal */}
         <Route path="/" element={<Home />} />
-
-        {/* Productos */}
         <Route path="/products" element={<Products />} />
-
-        {/* Categorías */}
         <Route path="/categories" element={<Categories />} />
-
-        {/* Carrito */}
         <Route path="/cart" element={<Cart />} />
 
-        {/* Login general */}
+        {/* Inicio de sesión */}
         <Route path="/login" element={<Login />} />
-
-        {/* Login según tipo de usuario */}
         <Route path="/login-cliente" element={<LoginCliente />} />
         <Route path="/login-colaborador" element={<LoginColaborador />} />
         <Route path="/login-admin" element={<LoginAdmin />} />
+
+        {/* Área del cliente */}
+        <Route path="/cliente" element={<Cliente />} />
 
         {/* Pedidos */}
         <Route path="/orders" element={<Orders />} />

@@ -1,27 +1,64 @@
+
 import { useState } from "react";
-import { signIn } from "aws-amplify/auth";
+import {
+  signIn,
+  fetchAuthSession,
+  signOut,
+} from "aws-amplify/auth";
+import { useNavigate } from "react-router-dom";
 
 function LoginColaborador() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [cargando, setCargando] = useState(false);
+
+  const navigate = useNavigate();
 
   const iniciarSesion = async (e) => {
     e.preventDefault();
     setMensaje("");
+    setCargando(true);
 
     try {
-      const { isSignedIn } = await signIn({
-        username: email,
-        password: password,
+      const resultado = await signIn({
+        username: email.trim(),
+        password,
       });
 
-      if (isSignedIn) {
-        setMensaje("Inicio de sesión exitoso");
+      if (!resultado.isSignedIn) {
+        setMensaje(
+          `Cognito requiere un paso adicional: ${
+            resultado.nextStep?.signInStep || "revisa tu cuenta"
+          }`
+        );
+        return;
       }
+
+      const sesion = await fetchAuthSession();
+      const token = sesion.tokens?.idToken;
+
+      if (!token) {
+        throw new Error("No se obtuvo el token de identidad de Cognito.");
+      }
+
+      const grupos = token.payload["cognito:groups"] || [];
+      const esColaborador =
+        Array.isArray(grupos) &&
+        grupos.some((grupo) => grupo.toLowerCase() === "colaborador");
+
+      if (!esColaborador) {
+        await signOut();
+        setMensaje("Tu cuenta no tiene permisos de colaborador.");
+        return;
+      }
+
+      navigate("/");
     } catch (error) {
-      console.error(error);
+      console.error("Error Cognito:", error);
       setMensaje(error.message || "Error al iniciar sesión");
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -31,39 +68,40 @@ function LoginColaborador() {
         <div className="login-icon">☕ 🌸</div>
 
         <h1>Bienvenido a Coffee Flower</h1>
-
         <p>Inicio de sesión Colaborador</p>
 
         <form onSubmit={iniciarSesion}>
-          <label>Correo electrónico</label>
-
+          <label htmlFor="email">Correo electrónico</label>
           <input
+            id="email"
             type="email"
             placeholder="correo@ejemplo.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="username"
             required
           />
 
-          <label>Contraseña</label>
-
+          <label htmlFor="password">Contraseña</label>
           <input
+            id="password"
             type="password"
             placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
             required
           />
 
-          <button type="submit">
-            Iniciar sesión
+          <button type="submit" disabled={cargando}>
+            {cargando ? "Ingresando..." : "Iniciar sesión"}
           </button>
         </form>
 
         {mensaje && (
-          <div className="login-message">
+          <p className="login-message" role="status">
             {mensaje}
-          </div>
+          </p>
         )}
       </div>
     </div>
