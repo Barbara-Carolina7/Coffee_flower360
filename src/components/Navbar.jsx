@@ -1,86 +1,25 @@
 
-import { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "react-oidc-context";
+const cerrarSesion = async () => {
+  try {
+    const clientId = "51k7vee96g6rc6bfiq3f2q9ocr";
+    const dominio =
+      "https://us-east-1fw8m072zh.auth.us-east-1.amazoncognito.com";
 
-function Navbar() {
-  const auth = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+    // Usa exactamente una URL registrada en Cognito
+    const logoutUri =
+      window.location.hostname === "localhost"
+        ? "http://localhost:5173"
+        : "https://coffee-flower360.vercel.app/";
 
-  const grupos = auth.user?.profile?.["cognito:groups"] || [];
+    await auth.removeUser();
 
-  let rol = "";
+    const logoutUrl =
+      `${dominio}/logout?client_id=${clientId}` +
+      `&logout_uri=${encodeURIComponent(logoutUri)}`;
 
-  if (grupos.includes("Admin")) {
-    rol = "Administrador";
-  } else if (grupos.includes("Colaborador")) {
-    rol = "Colaborador";
-  } else if (grupos.includes("Cliente")) {
-    rol = "Cliente";
+    window.location.assign(logoutUrl);
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    alert("No se pudo cerrar sesión. Revisa la consola.");
   }
-
-  useEffect(() => {
-    if (
-      auth.isAuthenticated &&
-      auth.user &&
-      location.pathname === "/login"
-    ) {
-      if (grupos.includes("Admin")) {
-        navigate("/dashboard", { replace: true });
-      } else if (grupos.includes("Colaborador")) {
-        navigate("/colaborador", { replace: true });
-      } else if (grupos.includes("Cliente")) {
-        navigate("/", { replace: true });
-      }
-    }
-  }, [
-    auth.isAuthenticated,
-    auth.user,
-    location.pathname,
-    navigate,
-    grupos,
-  ]);
-
-  const cerrarSesion = async () => {
-    try {
-      await auth.signoutRedirect();
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-      alert("No se pudo cerrar sesión. Inténtalo nuevamente.");
-    }
-  };
-
-  return (
-    <nav className="navbar">
-      <Link to="/" className="navbar-logo">
-        ☕ <span>Coffee Flower</span> 🌸
-      </Link>
-
-      <div className="navbar-links">
-        <Link to="/">Inicio</Link>
-        <Link to="/products">Productos</Link>
-        <Link to="/categories">Categorías</Link>
-        <Link to="/cart">🛒 Carrito</Link>
-
-        {auth.isAuthenticated ? (
-          <>
-            {rol && <span className="navbar-user">👤 {rol}</span>}
-
-            <button
-              type="button"
-              className="navbar-logout"
-              onClick={cerrarSesion}
-            >
-              ↪ Cerrar sesión
-            </button>
-          </>
-        ) : (
-          <Link to="/login">👤 Iniciar sesión</Link>
-        )}
-      </div>
-    </nav>
-  );
-}
-
-export default Navbar;
+};
