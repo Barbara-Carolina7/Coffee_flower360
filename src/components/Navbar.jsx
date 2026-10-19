@@ -1,73 +1,53 @@
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  getCurrentUser,
-  fetchAuthSession,
-  signOut,
-} from "aws-amplify/auth";
+import { useAuth } from "react-oidc-context";
 
 function Navbar() {
-  const [usuario, setUsuario] = useState(null);
-  const [rol, setRol] = useState("");
-  const [cargando, setCargando] = useState(false);
-
+  const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
+  const grupos = auth.user?.profile?.["cognito:groups"] || [];
+
+  let rol = "";
+
+  if (grupos.includes("Admin")) {
+    rol = "Administrador";
+  } else if (grupos.includes("Colaborador")) {
+    rol = "Colaborador";
+  } else if (grupos.includes("Cliente")) {
+    rol = "Cliente";
+  }
+
   useEffect(() => {
-    let activo = true;
-
-    async function revisarSesion() {
-      try {
-        const usuarioActual = await getCurrentUser();
-        const sesion = await fetchAuthSession();
-
-        const grupos =
-          sesion.tokens?.idToken?.payload?.["cognito:groups"] || [];
-
-        let rolActual = "Usuario";
-
-        if (grupos.includes("Admin")) {
-          rolActual = "Administrador";
-        } else if (grupos.includes("Colaborador")) {
-          rolActual = "Colaborador";
-        } else if (grupos.includes("Cliente")) {
-          rolActual = "Cliente";
-        }
-
-        if (activo) {
-          setUsuario(usuarioActual);
-          setRol(rolActual);
-        }
-      } catch {
-        if (activo) {
-          setUsuario(null);
-          setRol("");
-        }
+    if (
+      auth.isAuthenticated &&
+      auth.user &&
+      location.pathname === "/login"
+    ) {
+      if (grupos.includes("Admin")) {
+        navigate("/dashboard", { replace: true });
+      } else if (grupos.includes("Colaborador")) {
+        navigate("/colaborador", { replace: true });
+      } else if (grupos.includes("Cliente")) {
+        navigate("/", { replace: true });
       }
     }
-
-    revisarSesion();
-
-    return () => {
-      activo = false;
-    };
-  }, [location.pathname]);
+  }, [
+    auth.isAuthenticated,
+    auth.user,
+    location.pathname,
+    navigate,
+    grupos,
+  ]);
 
   const cerrarSesion = async () => {
-    setCargando(true);
-
     try {
-      await signOut();
-      setUsuario(null);
-      setRol("");
-      navigate("/login", { replace: true });
+      await auth.signoutRedirect();
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
-      alert("No se pudo cerrar sesión: " + error.message);
-    } finally {
-      setCargando(false);
+      alert("No se pudo cerrar sesión. Inténtalo nuevamente.");
     }
   };
 
@@ -83,19 +63,16 @@ function Navbar() {
         <Link to="/categories">Categorías</Link>
         <Link to="/cart">🛒 Carrito</Link>
 
-        {usuario ? (
+        {auth.isAuthenticated ? (
           <>
-            <span className="navbar-user">
-              👤 {rol}
-            </span>
+            {rol && <span className="navbar-user">👤 {rol}</span>}
 
             <button
               type="button"
               className="navbar-logout"
               onClick={cerrarSesion}
-              disabled={cargando}
             >
-              {cargando ? "Cerrando..." : "↪ Cerrar sesión"}
+              ↪ Cerrar sesión
             </button>
           </>
         ) : (
