@@ -16,31 +16,36 @@ function Navbar() {
   const esAdmin = grupos.includes("Admin");
   const esColaborador = grupos.includes("Colaborador");
 
+  // Diagnóstico temporal de Cognito.
+  console.log("Autenticado:", auth.isAuthenticated);
+  console.log("Cargando autenticación:", auth.isLoading);
+  console.log("Usuario Cognito:", auth.user);
+  console.log("Error de autenticación:", auth.error);
+
   const cerrarMenu = () => setMenuAbierto(false);
 
   const cerrarSesion = async () => {
     const clientId = "51k7vee96g6rc6bfiq3f2q9ocr";
+
     const dominio =
       "https://us-east-1fw8m072zh.auth.us-east-1.amazoncognito.com";
 
-    const logoutUri =
-      window.location.hostname === "localhost"
-        ? "http://localhost:5173"
-        : "https://coffee-flower360.vercel.app/";
+    const logoutUri = `${window.location.origin}/`;
 
     try {
-      // Cierra la sesión local de la aplicación.
+      // Elimina la sesión guardada en la aplicación.
       await auth.removeUser();
 
-      // Solicita a Cognito cerrar la sesión alojada.
+      // Redirige a Cognito para cerrar la sesión alojada.
       const logoutUrl =
-        `${dominio}/logout?client_id=${clientId}` +
+        `${dominio}/logout` +
+        `?client_id=${encodeURIComponent(clientId)}` +
         `&logout_uri=${encodeURIComponent(logoutUri)}`;
 
       window.location.assign(logoutUrl);
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
-      alert("No se pudo cerrar sesión. Revisa la consola.");
+      alert("No se pudo cerrar sesión. Revisa la consola del navegador.");
     }
   };
 
@@ -52,7 +57,11 @@ function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-contenido">
-        <Link to="/" className="navbar-logo" onClick={cerrarMenu}>
+        <Link
+          to="/"
+          className="navbar-logo"
+          onClick={cerrarMenu}
+        >
           <span className="navbar-logo-icono">☕</span>
           <span>Coffee Flower</span>
         </Link>
@@ -67,7 +76,9 @@ function Navbar() {
           ☰
         </button>
 
-        <nav className={`navbar-menu ${menuAbierto ? "abierto" : ""}`}>
+        <nav
+          className={`navbar-menu ${menuAbierto ? "abierto" : ""}`}
+        >
           <Link
             to="/"
             className={enlaceActivo("/")}
@@ -100,7 +111,7 @@ function Navbar() {
             Carrito
           </Link>
 
-          {usuarioAutenticado && (
+          {usuarioAutenticado ? (
             <>
               {esAdmin && (
                 <Link
@@ -141,9 +152,7 @@ function Navbar() {
                 Cerrar sesión
               </button>
             </>
-          )}
-
-          {!usuarioAutenticado && (
+          ) : (
             <button
               type="button"
               className="navbar-boton"
